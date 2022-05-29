@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #242526;
+  --light: #fff;
+  --primary: #0084ff;
+  --secondary: #eb4034;
+  --grey1: grey;
+  --grey2: #333;
+}
+
+body {
+  margin: 0;
+  background-color: #242526;
+  color: #fff;
+}
+
+/* Navbar */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  padding: 0 20px;
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--grey2);
+}
+
+nav a {
+  color: var(--light);
+  text-decoration: none;
+}
+
+nav div a {
+  margin-right: 20px;
+}
