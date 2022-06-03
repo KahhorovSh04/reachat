@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { setDoc, doc, Timestamp } from 'firebase/firestore'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { updateDoc, doc } from 'firebase/firestore'
 import { auth, db } from '../firebase'
 import { useNavigate } from 'react-router-dom'
 
-const Regsiter = () => {
+const Login = () => {
   const [data, setData] = useState({
-    name: '',
     email: '',
     password: '',
     error: null,
@@ -15,7 +14,7 @@ const Regsiter = () => {
 
   const navigate = useNavigate()
 
-  const { name, email, password, error, loading } = data
+  const { email, password, error, loading } = data
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value })
@@ -24,20 +23,15 @@ const Regsiter = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setData({ ...data, error: null, loading: true })
-    if (!email || !password || !name) {
+    if (!email || !password) {
       setData({ ...data, error: 'All fields are required' })
     }
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password)
-      await setDoc(doc(db, 'users', result.user.uid), {
-        uid: result.user.uid,
-        name,
-        email,
-        createdAt: Timestamp.fromDate(new Date()),
+      const result = await signInWithEmailAndPassword(auth, email, password)
+      await updateDoc(doc(db, 'users', result.user.uid), {
         isOnline: true,
       })
       setData({
-        name: '',
         email: '',
         password: '',
         error: null,
@@ -50,12 +44,8 @@ const Regsiter = () => {
   }
   return (
     <section>
-      <h3>Create an Acoount</h3>
+      <h3>Log into your acoount</h3>
       <form className='form' onSubmit={handleSubmit}>
-        <div className='input-container'>
-          <label htmlFor='name'>Name</label>
-          <input type='text' name='name' value={name} onChange={handleChange} />
-        </div>
         <div className='input-container'>
           <label htmlFor='email'>Email</label>
           <input
@@ -77,7 +67,7 @@ const Regsiter = () => {
         {error && <p className='error'>{error}</p>}
         <div className='btn-container'>
           <button className='btn' disabled={loading}>
-            {loading ? 'Creating...' : 'Register'}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </div>
       </form>
@@ -85,4 +75,4 @@ const Regsiter = () => {
   )
 }
 
-export default Regsiter
+export default Login
